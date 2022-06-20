@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'account' %}"><i class="im im-angle-left"></i></a>
+            <br>
+            <h3>Usuwanie technologii</h3>
+
+            <form class="form" method="POST">
+                {% csrf_token %}
+                <p>
+                    Czy jesteś pewien że chcesz usunąc: {{object}} ({{delete_type}})
+                </p>
+                <input class="btn btn--main btn--lg  my-md" type="submit" value="Usuń" />
+                <a class="btn btn--sub btn--lg  my-md" href="{{request.GET.next}}">Powrót do strony użytkownika</a>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

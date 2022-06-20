@@ -1,0 +1,41 @@
+{% load static %}
+
+<header class="header">
+  <div class="container container--narrow">
+    <a href="{% url 'profiles' %}">
+      <h4 style="color:white;">BuyApp</h4>
+    </a>
+    <nav class="header__nav">
+      <input type="checkbox" id="responsive-menu" />
+      <label for="responsive-menu" class="toggle-menu">
+        <span>Menu</span>
+        <div class="toggle-menu__lines"></div>
+      </label>
+      <ul class="header__menu">
+       
+        <li class="header__menuItem"><a href="{% url 'profiles' %}">Deweloperzy</a></li>
+        <li class="header__menuItem"><a href="{% url 'projects' %}">Aplikacje</a></li>
+          {% if user.is_authenticated %}
+          <li class="header__menuItem"><a href="inbox.html">Wiadomości</a></li>
+            {% if not user.is_superuser %}
+            <li class="header__menuItem"><a href="{% url 'create-project' %}">Nowy projekt</a></li>
+            {% endif %}
+          {% endif %}
+        
+        {% if request.user.is_authenticated %}
+
+          {% if request.user.is_superuser %}
+          <li class="header__menuItem"><a href="{% url 'create-project' %}">Panel admina</a></li>
+
+          {% else %}
+          <h6>Witaj <b><a href="{% url 'account' %}">{{request.user.first_name}}</a></b></h6>
+          {% endif %}
+          <li class="header__menuItem"><a href="{% url 'logout' %}" class="btn btn--sub">Wyloguj</a></li>
+
+        {% else %}
+        <li class="header__menuItem"><a href="{% url 'login' %}" class="btn btn--sub">Zaloguj</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</header>

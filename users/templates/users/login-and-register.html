@@ -1,0 +1,94 @@
+{% extends 'main.html' %}
+{% load static%}
+
+{% block content %}
+
+{% if page == 'login' %}
+<div class="auth">
+    <div class="card">
+      <div class="auth__header text-center">
+        <a href="/">
+          <img src="{% static 'images/icon.svg' %}" height="50" alt="icon" />
+        </a>
+        <h3>Panel logowania</h3>
+        <p>Witaj użytkowniku, wprowadź dane logowania!</p>
+      </div>
+
+      <form action="{% url 'login' %}" method="POST" class="form auth__form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- LOGIN -->
+        <div class="form__field">
+          <label for="formInput#text">Login: </label>
+          <input
+            class="input input--text"
+            id="formInput#text"
+            type="text"
+            name="username"
+            placeholder="Enter your username..."
+          />
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form__field">
+          <label for="formInput#password">Hasło: </label>
+          <input
+            class="input input--password"
+            id="formInput#passowrd"
+            type="password"
+            name="password"
+            placeholder="••••••••"
+          />
+        </div>
+        <div class="auth__actions">
+          <input class="btn btn--sub btn--lg" type="submit" value="Zaloguj" />
+          <a href="forgetpassword.html">Zapomniałeś/aś hasła?</a>
+        </div>
+      </form>
+      <div class="auth__alternative">
+        <p>Nie posiadasz konta?</p>
+        <a href="{% url 'register-profile' %}">Rejestracja</a>
+      </div>
+    </div>
+  </div>
+
+{% elif page == 'register' %}
+    <div class="auth">
+        <div class="card">
+          <div class="auth__header text-center">
+            <a href="/">
+              <img src="{% static 'images/icon.svg' %}" alt="icon" />
+            </a>
+            <h3>Rejestracja Konta</h3>
+            <p>Stwórz nowe konto</p>
+          </div>
+  
+          <form method="POST" action="{% url 'register-profile' %}" class="form auth__form" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="form__field">
+              <label for="formInput#text">{{field.label}}</label>
+              {{field}}
+
+              {% if field.help_text %}
+                <small>{{field.help_text}}</small>
+              {% endif %}
+
+              {% for error in field.errors %}
+                <p style="color: red;">{{error}}</p>
+              {% endfor %}
+            </div>
+            {% endfor %}
+            <div class="auth__actions">
+              <input class="btn btn--sub btn--lg" type="submit" value="Rejestruj" />
+            </div>
+          </form>
+          <div class="auth__alternative">
+            <p>Posiadasz konto?</p>
+            <a href="{% url 'login' %}">Logowanie</a>
+          </div>
+        </div>
+      </div>
+{% endif %}
+
+{% endblock content %}
