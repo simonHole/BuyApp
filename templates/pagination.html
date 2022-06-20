@@ -1,0 +1,46 @@
+{% if queryset.has_other_pages %}
+    <div class="pagination">
+      <ul class="contianer">
+        {% if queryset.has_previous %}
+          <li><a href="?page={{queryset.previous_page_number}}" class="btn page-link" data-page="{{queryset.previous_page_number}}">&#10094; Poprzednia strona</a></li>
+        {% endif %}
+
+        {% for page in pages_range %}
+          {% if page == queryset.number %}
+          <li><a href="?page={{page}}" class="btn page-link btn--sub" data-page="{{page}}">{{page}}</a></li>
+          {% else %}
+          <li><a href="?page={{page}}" class="btn page-link" data-page="{{page}}">{{page}}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if queryset.has_next %}
+          <li><a href="?page={{queryset.next_page_number}}" class="btn page-link" data-page="{{queryset.next_page_number}}">Następna strona &#10095;</a></li>
+        {% endif %}
+      </ul>
+    </div>
+{% endif %}
+
+
+<script type="text/javascript">
+  // Get buttons and form to search
+  let search_form = document.getElementById("searchForm");
+  let page_links = document.getElementsByClassName("page-link")
+
+  // Check if search_form exist
+  if (search_form) {
+      for(let i = 0; i < page_links.length; i++){
+          page_links[i].addEventListener('click', function (event) {
+          event.preventDefault()
+
+          let page = this.dataset.page
+          console.log('PAGE: ', page)
+
+          // Hidden search input
+          search_form.innerHTML += `<input value=${page} name="page" hidden/>`;
+              
+          // Submit this form
+          search_form.submit();
+          })
+      }
+  }
+</script>

@@ -10,7 +10,7 @@
         </div>
 
         <div class="hero-section__search">
-          <form class="form" action="{% url 'projects' %}" method="get">
+          <form id="searchForm" class="form" action="{% url 'projects' %}" method="get">
             <div class="form__field">
               <label for="formInput#search">Search By Projects </label>
               <input class="input input--text" id="formInput#search" type="text" name="find_projects"
@@ -58,28 +58,8 @@
         </div>
       </div>
     </section>
-
-    {% if projects.has_other_pages %}
-    <div class="pagination">
-      <ul class="contianer">
-        {% if projects.has_previous %}
-          <li><a href="?page={{projects.previous_page_number}}" class="btn page-link">&#10094; Poprzednia strona</a></li>
-        {% endif %}
-
-        {% for page in pages_range %}
-          {% if page == projects.number %}
-          <li><a href="?page={{page}}" class="btn page-link btn--sub">{{page}}</a></li>
-          {% else %}
-          <li><a href="?page={{page}}" class="btn page-link">{{page}}</a></li>
-          {% endif %}
-        {% endfor %}
-
-        {% if projects.has_next %}
-          <li><a href="?page={{projects.next_page_number}}" class="btn page-link">Następna strona &#10095;</a></li>
-        {% endif %}
-      </ul>
-    </div>
-    {% endif %}
   </main>
+
+  {% include 'pagination.html' with queryset=projects pages_range=pages_range %}
 
 {% endblock %}

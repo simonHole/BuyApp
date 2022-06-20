@@ -7,7 +7,7 @@ from django.db.models import Q
 from projects.models import *
 from .models import *
 from .forms import CreateUserForm, EditUserForm, CreateTechnologyForm
-from .utils import search_profiles
+from .utils import search_profiles, pagination_profiles
 
 # Create your views here.
 
@@ -84,10 +84,12 @@ def register_profile(request):
 def profiles(request):
     # Show all profiles
     profiles, find_profile = search_profiles(request)
+    pages_range, profiles = pagination_profiles(request, profiles, 1)
 
     context = {
         'profiles': profiles,
         'find_profile': find_profile,
+        'pages_range': pages_range,
     }
     return render(request, 'users/profiles.html', context)
 

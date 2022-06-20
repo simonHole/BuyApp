@@ -7,7 +7,6 @@ from django.db.models import Q
 def pagination_projects(request, projects, results):
 
     page = request.GET.get('page')
-    results = 3
 
     # Show specific projects
     paginator = Paginator(projects, results)
@@ -24,7 +23,7 @@ def pagination_projects(request, projects, results):
         projects = paginator.page(page)
 
     # Count of sites on menu
-    left_side = (int(page) - 5)
+    left_side = (int(page) - 4)
     if left_side < 1:
         left_side = 1
 
@@ -32,7 +31,7 @@ def pagination_projects(request, projects, results):
     if right_side > paginator.num_pages:
         right_side = paginator.num_pages
 
-    pages_range = range(left_side, right_side)
+    pages_range = range(left_side, right_side+1)
 
     return pages_range, projects
 
