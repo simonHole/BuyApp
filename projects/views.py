@@ -93,3 +93,9 @@ def delete_project(request, pk):
         return redirect('account')
     context = {'object': project, 'delete_type': delete_type}
     return render(request, 'delete-template.html', context)
+
+@login_required(login_url="login")
+def buy_project(request, pk):
+    project = Project.objects.get(id=pk)
+    context = {'project': project}
+    return render(request, 'projects/buy-project.html', context)

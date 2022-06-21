@@ -45,7 +45,7 @@ def search_projects(request):
     print(f'Find project: {find_projects}')
 
     tags = Tag.objects.filter(name__icontains=find_projects)
-    profile = Profile.objects.filter(surname__icontains=find_projects)
+    profile = Profile.objects.filter(full_name__icontains=find_projects)
     print(profile)
 
     # Global filter

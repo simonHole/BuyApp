@@ -26,8 +26,12 @@ def update_user(sender, instance, created, **kwargs):
 
     if created == False:
         full_name = profile.full_name.split()
-        user.first_name = full_name[0]
-        user.last_name = full_name[1]
+        if len(full_name) == 1:
+            user.first_name = full_name[0]
+            user.last_name = ''
+        else:
+            user.first_name = full_name[0]
+            user.last_name = full_name[1]
         user.username = profile.nickname
         user.email = profile.email
         user.save()
@@ -36,5 +40,8 @@ def update_user(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=User)
 def delete_profile(sender, instance, **kwargs):
     profile = instance.profile
-    profile.delete()
-    print(f'delete_profile: {instance.name} successfully deleted')
+    if profile:
+        profile.delete()
+        print(f'delete_profile: {instance.username} successfully deleted')
+    else:
+        pass

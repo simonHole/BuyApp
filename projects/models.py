@@ -70,3 +70,10 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+class Transaction(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    buyer = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    id = models.UUIDField(default=uuid4, unique=True, primary_key=True, editable=False)
+    

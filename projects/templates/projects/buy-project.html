@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <br>
+
+            <form class="form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h2>{{project.title}}</h2>
+                <p>Cena produktu: </p><b>{{project.price}} PLN</b>
+                
+                <div class="form__field">
+                </div>
+               
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Przejdź do płatności" />
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock content %}

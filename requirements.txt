@@ -1,6 +1,4 @@
 pip install django
 pip install whitenoise
 pip install pillow
-pip install djangorestframework
-pip install django-rest-swagger
-
+pip install django-allauth
