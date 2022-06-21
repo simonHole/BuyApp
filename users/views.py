@@ -9,6 +9,8 @@ from .models import *
 from .forms import CreateUserForm, EditUserForm, CreateTechnologyForm
 from .utils import search_profiles, pagination_profiles
 
+from allauth.socialaccount.forms import SignupForm as SocialSignupForm
+
 # Create your views here.
 
 
@@ -71,13 +73,13 @@ def register_profile(request):
             messages.success(
                 request, f"Użytkownik {user.username} utworzony pomyślnie.")
 
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('edit-account')
         else:
             messages.error(
                 request, "Wystąpił błąd podczas rejestracji.")
 
-    context = {'form': form, 'page': page, }
+    context = {'form': form, 'page': page}
     return render(request, 'users/login-and-register.html', context)
 
 

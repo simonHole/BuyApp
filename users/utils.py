@@ -51,9 +51,8 @@ def search_profiles(request):
 
     # Global filter
     # distinct() avoid duplicate objects in technology__in=technologies because if find one of all technologies, render new object in profiles.
-    profiles = off_superuser    .distinct().filter(
-        Q(name__icontains=find_profile) |
-        Q(surname__icontains=find_profile) |
+    profiles = off_superuser.distinct().filter(
+        Q(full_name__icontains=find_profile) |
         Q(status__icontains=find_profile) |
         Q(technology__in=technologies))
 

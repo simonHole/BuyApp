@@ -44,6 +44,12 @@
           <a href="forgetpassword.html">Zapomniałeś/aś hasła?</a>
         </div>
       </form>
+
+      {% load socialaccount %}
+      <a href="{% provider_login_url 'google' %}">Zaloguj się z Google</a>
+      <br>
+      <br>
+
       <div class="auth__alternative">
         <p>Nie posiadasz konta?</p>
         <a href="{% url 'register-profile' %}">Rejestracja</a>
@@ -83,6 +89,7 @@
               <input class="btn btn--sub btn--lg" type="submit" value="Rejestruj" />
             </div>
           </form>
+
           <div class="auth__alternative">
             <p>Posiadasz konto?</p>
             <a href="{% url 'login' %}">Logowanie</a>

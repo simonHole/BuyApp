@@ -13,7 +13,7 @@ def create_profile(sender, instance, created, **kwargs):
             user=user,
             nickname=user.username,
             email=user.email,
-            name=user.first_name,
+            full_name=user.last_name + ' ' + user.first_name,
         )
         print(f'create_profile {profile.nickname} successfully created')
 
@@ -25,23 +25,16 @@ def update_user(sender, instance, created, **kwargs):
     user = profile.user
 
     if created == False:
-        user.first_name = profile.name
-        user.last_name = profile.surname
+        full_name = profile.full_name.split()
+        user.first_name = full_name[0]
+        user.last_name = full_name[1]
         user.username = profile.nickname
         user.email = profile.email
         user.save()
 
 
-@receiver(post_delete, sender=Profile)
+@receiver(post_delete, sender=User)
 def delete_profile(sender, instance, **kwargs):
-    user = instance.user
-    user.delete()
-    print(f'delete_profile: {instance.name} successfully deleted')
-    
-
-
-@receiver(post_delete, sender=Profile)
-def delete_user(sender, instance, **kwargs):
     profile = instance.profile
     profile.delete()
-    print(f'delete_user:  {instance.first_name} succesfully deleted')
+    print(f'delete_profile: {instance.name} successfully deleted')

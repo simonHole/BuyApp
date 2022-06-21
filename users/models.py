@@ -8,8 +8,7 @@ class Profile(models.Model):
     # every user have to have on_delete attribute
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=100, null=True, blank=True)
-    surname = models.CharField(max_length=100, null=True, blank=True)
+    full_name = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(max_length=200, blank=True, null=True)
     nickname = models.CharField(max_length=100, null=True, blank=True)
     location = models.CharField(max_length=100, null=True, blank=True)

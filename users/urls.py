@@ -1,5 +1,5 @@
 from django import views
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
          views.update_technology, name="update-technology"),
     path('delete-technology/<str:pk>',
          views.delete_technology, name='delete-technology'),
+     path('accounts/', include('allauth.urls')),
 ]

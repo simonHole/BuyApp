@@ -45,6 +45,7 @@ class Review(models.Model):
 
     # Param on_delete working like if we delete some project, every review about it will be delete
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     content = models.TextField(null=True, blank=True)
     value = models.CharField(max_length=500, choices=VOTE_TYPE)
     created = models.DateTimeField(auto_now_add=True)
@@ -53,6 +54,11 @@ class Review(models.Model):
 
     def __str__(self):
         return self.value
+
+    class Meta:
+        unique_together = [
+            ['owner', 'project']
+        ]
 
 
 class Tag(models.Model):

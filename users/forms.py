@@ -27,11 +27,10 @@ class CreateUserForm(UserCreationForm):
 class EditUserForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ['name', 'surname', 'email', 'nickname', 'location', 'status',
+        fields = ['full_name', 'email', 'nickname', 'location', 'status',
                   'biography', 'image', 'github', 'linkedin', 'site']
         labels = {
-            'name': 'Imię',
-            'surname': 'Nazwisko',
+            'full_name' : 'Nazwisko i imię',
             'email': 'Adres e-mail',
             'nickname': 'Login',
             'location': 'Bieżąca lokalizacja',
