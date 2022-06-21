@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-d8xx52b9*_@b_i7a&3_^ici*7oc561f&xnoocn_uei8i1ps#m_
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+SITE_ID = 1
 
 
 # Application definition
@@ -38,9 +39,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     'projects.apps.ProjectsConfig',
     'users.apps.UsersConfig',
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 MIDDLEWARE = [

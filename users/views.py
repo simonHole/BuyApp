@@ -84,7 +84,7 @@ def register_profile(request):
 def profiles(request):
     # Show all profiles
     profiles, find_profile = search_profiles(request)
-    pages_range, profiles = pagination_profiles(request, profiles, 1)
+    pages_range, profiles = pagination_profiles(request, profiles, 3)
 
     context = {
         'profiles': profiles,

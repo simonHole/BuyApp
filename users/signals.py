@@ -18,6 +18,7 @@ def create_profile(sender, instance, created, **kwargs):
         print(f'create_profile {profile.nickname} successfully created')
 
 
+
 @receiver(post_save, sender=Profile)
 def update_user(sender, instance, created, **kwargs):
     profile = instance
@@ -36,3 +37,11 @@ def delete_profile(sender, instance, **kwargs):
     user = instance.user
     user.delete()
     print(f'delete_profile: {instance.name} successfully deleted')
+    
+
+
+@receiver(post_delete, sender=Profile)
+def delete_user(sender, instance, **kwargs):
+    profile = instance.profile
+    profile.delete()
+    print(f'delete_user:  {instance.first_name} succesfully deleted')
