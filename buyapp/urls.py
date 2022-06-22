@@ -22,8 +22,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
+    path('payments/', include('payments.urls')),
     path('accounts/', include('allauth.urls')),
     path('', include('users.urls')),
+
 ]
 
 # Add url path to download static files on server

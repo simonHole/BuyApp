@@ -35,7 +35,11 @@ def login_profile(request):
         except:
             messages.error(request, f"Nie znaleziono użytkownika: {username}.")
 
-        user = authenticate(request, username=user, password=password)
+        try:
+            user = authenticate(request, username=user, password=password)
+        except UnboundLocalError:
+            messages.error(request, "Logowanie niepomyślne")
+            return redirect('login')
 
         if user is not None:
             login(request, user)

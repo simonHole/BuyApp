@@ -6,7 +6,7 @@
         <div class="formWrapper">
             <br>
 
-            <form class="form" method="POST" enctype="multipart/form-data">
+            <form action="{% url 'payment' id %}" class="form" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h2>{{project.title}}</h2>
                 <p>Cena produktu: </p><b>{{project.price}} PLN</b>

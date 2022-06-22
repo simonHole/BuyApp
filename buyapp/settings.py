@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
+    "payments",
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -48,6 +49,31 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
 ]
 
+PAYMENT_HOST = 'localhost:8000'
+PAYMENT_USES_SSL = False
+
+
+PAYMENT_VARIANTS = {
+    'dotpay': (
+        'payments.dotpay.DotpayProvider',
+        {
+            'seller_id': '780567',
+            'pin': 'QzZkZKNDXXMEnnbmhOo4qgg7hkPsNgjS',
+            'channel_groups': 'T',
+            'lock': True,
+        }
+    ),
+    'stripe': (
+        'payments.stripe.StripeProvider',
+        {
+            'secret_key': 'sk_test_51LDbyeCYNtGOpJrKD2wXIp6bboqNVAvzfvzZv69X3hUv3QQ9FtReEpvzNR5CrX8DePfhp1zQxM3QFi7KbU7nTbYC002Qmeu4sQ',
+            'public_key': 'pk_test_51LDbyeCYNtGOpJrKtw8Q2topWuJtXnWGWxLcf7KtunC2rFZN2IUKVUpsporyjjX2Rjl5ub7VySQSuZh8TothnXFl00FZkkwqIr',
+        }
+    )
+}
+
+
+PAYMENT_MODEL = 'projects.Payment'
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`

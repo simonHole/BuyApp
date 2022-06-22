@@ -7,6 +7,12 @@ from .models import *
 from .forms import *
 from .utils import search_projects, pagination_projects
 
+from payments import get_payment_model
+
+from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
+from payments import get_payment_model, RedirectNeeded
+
 
 def project(request, pk):
     project = Project.objects.get(id=pk)
@@ -103,5 +109,49 @@ def delete_project(request, pk):
 @login_required(login_url="login")
 def buy_project(request, pk):
     project = Project.objects.get(id=pk)
-    context = {'project': project}
+    get_payment = get_payment_model()
+
+    first_name, last_name = request.user.profile.full_name.split()
+
+    payment = get_payment.objects.create(
+        variant='dotpay',  # this is the variant from PAYMENT_VARIANTS
+        description='Paypal purchase',
+        total=Decimal(project.price),
+        tax=Decimal(20),
+        currency='PLN',
+        delivery=Decimal(0),
+        billing_first_name=request.user.first_name,
+        billing_last_name=request.user.last_name,
+        billing_address_1='aleja Tysiąclecia Państwa Polskiego 4',
+        billing_address_2='',
+        billing_city='Kielce',
+        billing_postcode='25-001',
+        billing_country_code='PL',
+        billing_country_area='swietokrzyskie',
+        customer_ip_address='127.0.0.1',
+    )
+    print(payment)
+
+    payment.save()
+
+    context = {
+        'project': project,
+        'id': payment.id,
+    }
+
     return render(request, 'projects/buy-project.html', context)
+
+
+def payment_details(request, payment_id):
+    payment = get_object_or_404(get_payment_model(), id=payment_id)
+
+    try:
+        form = payment.get_form(data=request.POST or None)
+    except RedirectNeeded as redirect_to:
+        return redirect(str(redirect_to))
+
+    return TemplateResponse(
+        request,
+        'payment.html',
+        {'form': form, 'payment': payment}
+    )

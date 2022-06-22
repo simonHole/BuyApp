@@ -4,6 +4,11 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import *
 
+from decimal import Decimal
+
+from payments import PurchasedItem
+from payments.models import BasePayment
+
 
 class Project(models.Model):
     owner = models.ForeignKey(
@@ -85,7 +90,7 @@ class Tag(models.Model):
 class Transaction(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     buyer = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid4, unique=True,
                           primary_key=True, editable=False)
 
@@ -94,3 +99,20 @@ class Transaction(models.Model):
 
     def __str__(self):
         return self.project.title
+
+
+class Payment(BasePayment):
+    def get_failure_url(self) -> str:
+        return '/'
+
+    def get_success_url(self) -> str:
+        return '/'
+
+    def get_purchased_items(self):
+        yield PurchasedItem(
+            name='project',
+            quantity=1,
+            price=Decimal(1.0),
+            currency='PLN',
+            sku='2137'
+        )
