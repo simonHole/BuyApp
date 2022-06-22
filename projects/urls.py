@@ -3,7 +3,6 @@ from django.urls import path
 from django.http import HttpResponse
 from . import views
 
-# Create your URL's here
 urlpatterns = [
     path('project/<str:pk>/', views.project, name='project'),
     path('', views.projects, name='projects'),

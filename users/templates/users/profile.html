@@ -8,9 +8,18 @@
           <div class="card text-center">
             <div class="card__body dev">
               <img class="avatar avatar--xl" src="{{profile.image.url}}" />
-              <h2 class="dev__name">{{profile.name}} {{profile.surname}}</h2>
+              <h2 class="dev__name">{{profile.full_name}}</h2>
+              {% if profile.status %}
               <p class="dev__title">{{profile.status}}</p>
+              {% else %}
+                <p>Nieokreślony</p>
+              {% endif %}
+
+              {% if profile.location %}
               <p class="dev__location">Przebywa w: {{profile.location}}</p>
+              {% else %}
+              <p class="dev__location">Brak podanego miejsca pobytu.</p>
+              {% endif %}
               <ul class="dev__social">
                     {% if profile.github %}
                     <li>
@@ -28,7 +37,10 @@
                     </li>
                     {% endif %}
               </ul>
-              <a href="#" class="btn btn--main btn--lg">Wyślij wiadomość</a>
+
+              {% if request.user.profile != profile %}
+              <a href="{% url 'send-message' profile.id %}" class="btn btn--main btn--lg">Wyślij wiadomość</a>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -36,12 +48,17 @@
           <div class="devInfo">
             <h3 class="devInfo__title">O mnie</h3>
             <p class="devInfo__about">
+              {% if profile.biography %}
               {{profile.biography}}
+              {% else %}
+              <p>Brak opisu</p>
+              {% endif %}
             </p>
           </div>
           <div class="devInfo">
             <h3 class="devInfo__title">Znane technologie</h3>
             <div class="devInfo__skills">
+              {% if main_technologies %}
                 {% for technology in main_technologies %}
               <div class="devSkill">
                 <h4 class="devSkill__title">{{technology.name}}</h4>
@@ -50,21 +67,30 @@
                 </p>
               </div>
               {% endfor %}
+            {% else %}
+            <p>Brak znanych technologii.</p>
+            <br>
+            {% endif%}
               
               <h3 class="devInfo__subtitle">Mniej znane technologie</h3>
               <div class="devInfo__otherSkills">
+                {% if tags_technologies %}
                 {% for technology in tags_technologies %}
                 <span class="tag tag--pill tag--sub tag--lg">
                   <small>{{technology.name}}</small>
                 </span>  
                 {% endfor %}
+                {% else %}
+                  <small>Brak mniej znanych technologii.</small>
+                {% endif %}
+
+                
               </div>
             </div>
           </div>
           <div class="devInfo">
             <h3 class="devInfo__title">Projekty</h3>
             <div class="grid grid--two">
-
               {% for project in projects %}
               <div class="column">
                 <div class="card project">
@@ -72,7 +98,7 @@
                     <img class="project__thumbnail" src="{{project.featured_image.url}}" alt="project thumbnail" />
                     <div class="card__body">
                       <h3 class="project__title">{{project.title}}</h3>
-                      <p><a class="project__author" href="{% url 'user-profile' profile.id %}">By {{project.owner.name}} {{project.owner.surname}}</a></p>
+                      <p><a class="project__author" href="{% url 'user-profile' profile.id %}">By {{project.owner.full_name}}</a></p>
                       <p class="project--rating">
                         <span style="font-weight: bold;">{{project.scores_votes}}%</span> Positive
                         Feedback ({{project.total_votes}} Vote{{project.total_votes|pluralize:"s"}})

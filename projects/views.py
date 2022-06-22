@@ -2,22 +2,35 @@ from unittest import result
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib import messages
 from .models import *
 from .forms import *
 from .utils import search_projects, pagination_projects
-
-# Create your views here.
 
 
 def project(request, pk):
     project = Project.objects.get(id=pk)
     owner_full_name = project.owner.user.first_name + \
         ' ' + project.owner.user.last_name
+    review_form = ReviewForm
+
+    if request.method == 'POST':
+        review_form = ReviewForm(request.POST)
+        review = review_form.save(commit=False)
+        review.project = project
+        review.owner = request.user.profile
+        review.save()
+
+        project.get_vote_total
+
+        messages.success(request, 'Twój komentarz został dodany pomyślnie')
+        return redirect('project', pk=project.id)
 
     context = {
         'project': project,
         'tags': project.tags.all(),
         'owner_full_name': owner_full_name,
+        'review_form': review_form
     }
     return render(request, 'projects/single-project.html', context)
 
@@ -34,20 +47,14 @@ def projects(request):
     }
     return render(request, 'projects/projects.html', context)
 
-# @login_required check if user is logged in, if not redirect to login page
-
 
 @login_required(login_url="login")
-# Create and add new project to database
 def create_project(request):
     profile = request.user.profile
     method = 'create'
     form = ProjectForm()
 
     if request.method == 'POST':
-        # request.POST -> send data by POST method and request.FILES allow send the files by POST method, remember about
-        # enctype
-
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project = form.save(commit=False)
@@ -62,7 +69,6 @@ def create_project(request):
 
 
 @login_required(login_url="login")
-# Update exist project
 def update_project(request, pk):
     profile = request.user.profile
     method = 'update'
@@ -82,7 +88,6 @@ def update_project(request, pk):
 
 
 @login_required(login_url="login")
-# Delete known technology from profile
 def delete_project(request, pk):
     delete_type = "Projekt"
     profile = request.user.profile
@@ -93,6 +98,7 @@ def delete_project(request, pk):
         return redirect('account')
     context = {'object': project, 'delete_type': delete_type}
     return render(request, 'delete-template.html', context)
+
 
 @login_required(login_url="login")
 def buy_project(request, pk):

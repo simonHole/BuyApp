@@ -36,9 +36,13 @@
         <div class="column column--2of3">
           <div class="devInfo">
             <h3 class="devInfo__title">O mnie</h3>
+            {% if profile.biography == None %}
+            <p class="devInfo__about">Brak opisu</p>
+            {% else %}
             <p class="devInfo__about">
               {{profile.biography}}
             </p>
+            {% endif %}
           </div>
           <div class="settings">
             <h3 class="settings__title">Znane technologie</h3>
@@ -46,6 +50,11 @@
           </div>
 
           <table class="settings__table">
+          {% if technologies.count == 0 %}
+            <p>Brak znanych technologii</p>
+            <br>
+
+          {% else %}
             {% for technology in technologies  %}
             <tr>
               <td class="settings__tableInfo">
@@ -62,6 +71,7 @@
             </tr>
             {% endfor %}
           </table>
+        {% endif %}
 
           <div class="settings">
             <h3 class="settings__title">Projekty</h3>

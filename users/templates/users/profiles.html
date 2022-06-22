@@ -34,11 +34,19 @@
                   <img class="avatar avatar--md" src="{{profile.image.url}}" alt="image" />
                   <div class="dev__meta">
                     <h3>{{profile.full_name}}</h3>
+                    {% if profile.status %}
                     <h5>{{profile.status|slice:"100"}}</h5>
+                    {% else %}
+                    <h5>Nieokreślony</h5>
+                    {% endif %}
                   </div>
                 </div>
                 <p class="dev__info">
+                  {% if profile.biography %}
                   {{profile.biography|slice:"250"}}
+                  {% else %}
+                  <p>Brak opisu</p>
+                  {% endif %}
                 </p>
                 <div class="dev__skills">
                 {% for technology in profile.technology_set.all %}

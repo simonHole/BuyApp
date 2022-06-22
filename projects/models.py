@@ -1,13 +1,11 @@
+from enum import unique
 from uuid import uuid4
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import *
 
-# Create your models here.
-
 
 class Project(models.Model):
-    # Blank - whenever you change some in form to UPDATE record you can't submit empty field
     owner = models.ForeignKey(
         Profile, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=50, blank=False)
@@ -33,8 +31,23 @@ class Project(models.Model):
         super(Project, self).save(*args, **kwargs)
 
     class Meta:
-        # Set ordering from oldest to newest in QuerySet
-        ordering = ['created']
+        ordering = ['-total_votes', '-scores_votes']
+
+    @property
+    def get_reviewers(self):
+        reviewers = self.review_set.all().values_list('owner__id', flat=True)
+        return reviewers
+
+    @property
+    def get_vote_total(self):
+        reviews = self.review_set.all()
+        like_vote = reviews.filter(value='like').count()
+        total_votes = reviews.count()
+
+        ratio = (like_vote / total_votes) * 100
+        self.total_votes = total_votes
+        self.scores_votes = ratio
+        self.save()
 
 
 class Review(models.Model):
@@ -43,22 +56,19 @@ class Review(models.Model):
         ('dislike', 'Dislike'),
     )
 
-    # Param on_delete working like if we delete some project, every review about it will be delete
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     content = models.TextField(null=True, blank=True)
     value = models.CharField(max_length=500, choices=VOTE_TYPE)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid4, unique=True,
                           primary_key=True, editable=False)
 
+    class Meta:
+        unique_together = [['owner', 'project']]
+
     def __str__(self):
         return self.value
-
-    class Meta:
-        unique_together = [
-            ['owner', 'project']
-        ]
 
 
 class Tag(models.Model):
@@ -71,9 +81,16 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class Transaction(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     buyer = models.ForeignKey(Profile, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
-    id = models.UUIDField(default=uuid4, unique=True, primary_key=True, editable=False)
-    
+    id = models.UUIDField(default=uuid4, unique=True,
+                          primary_key=True, editable=False)
+
+    class Meta:
+        unique_together = [['project', 'buyer']]
+
+    def __str__(self):
+        return self.project.title

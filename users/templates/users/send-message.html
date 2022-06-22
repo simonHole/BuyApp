@@ -1,0 +1,41 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'user-profile' recipient.id %}"><i class="im im-angle-left"></i></a>
+            <br>
+            <h4>Wiadomość do: <a>{{recipient.full_name}}</a></h4>
+            <form class="form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if not request.user.is_authenticated %}
+                <label for="formInput#text">{{form.name.label}}</label>
+                <div class="form__field">
+                    {{form.name}}
+                </div>
+
+                <label for="formInput#text">{{form.email.label}}</label>
+                <div class="form__field">
+                    {{form.email}}
+                </div>
+
+                {% endif %}   
+
+                <label for="formInput#text">{{form.title.label}}</label>
+                <div class="form__field">
+                    {{form.title}}
+                </div>
+
+                <label for="formInput#text">{{form.content.label}}</label>
+                <div class="form__field">
+                    {{form.content}}
+                </div>
+                
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Wykonaj" />
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock content %}

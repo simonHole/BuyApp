@@ -15,5 +15,9 @@ urlpatterns = [
          views.update_technology, name="update-technology"),
     path('delete-technology/<str:pk>',
          views.delete_technology, name='delete-technology'),
-     path('accounts/', include('allauth.urls')),
+    path('inbox/', views.inbox, name='inbox'),
+    path('message/<str:pk>', views.message, name='message'),
+    path('send-message/<str:pk>', views.create_message, name='send-message'),
+
+    path('accounts/', include('allauth.urls')),
 ]

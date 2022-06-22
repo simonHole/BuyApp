@@ -8,21 +8,17 @@ def pagination_profiles(request, profiles, results):
 
     page = request.GET.get('page')
 
-    # Show specific profiles
     paginator = Paginator(profiles, results)
 
     try:
         profiles = paginator.page(page)
-    # First visit on site
     except PageNotAnInteger:
         page = 1
         profiles = paginator.page(page)
-    # Out of range or not existing site
     except EmptyPage:
         page = paginator.num_pages
         profiles = paginator.page(page)
 
-    # Count of sites on menu
     left_side = (int(page) - 1)
     if left_side < 1:
         left_side = 1
@@ -37,7 +33,6 @@ def pagination_profiles(request, profiles, results):
 
 
 def search_profiles(request):
-    # Show all profiles
     find_profile = ''
 
     # After search
@@ -49,8 +44,6 @@ def search_profiles(request):
 
     off_superuser = Profile.objects.filter(user__is_superuser=False)
 
-    # Global filter
-    # distinct() avoid duplicate objects in technology__in=technologies because if find one of all technologies, render new object in profiles.
     profiles = off_superuser.distinct().filter(
         Q(full_name__icontains=find_profile) |
         Q(status__icontains=find_profile) |

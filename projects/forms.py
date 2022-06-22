@@ -12,9 +12,25 @@ class ProjectForm(ModelForm):
             'tags': forms.CheckboxSelectMultiple(),
         }
 
-    # Class to relation CSS styling to custom form inputs
     def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
+
+        for key, value in self.fields.items():
+            value.widget.attrs.update({'class': 'input'})
+
+
+class ReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = ['value', 'content']
+
+        labels = {
+            'value': 'Twoja ocena: ',
+            'content': 'Treść komentarza: ',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ReviewForm, self).__init__(*args, **kwargs)
 
         for key, value in self.fields.items():
             value.widget.attrs.update({'class': 'input'})

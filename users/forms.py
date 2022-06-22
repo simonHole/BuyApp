@@ -30,7 +30,7 @@ class EditUserForm(ModelForm):
         fields = ['full_name', 'email', 'nickname', 'location', 'status',
                   'biography', 'image', 'github', 'linkedin', 'site']
         labels = {
-            'full_name' : 'Nazwisko i imię',
+            'full_name': 'Nazwisko i imię',
             'email': 'Adres e-mail',
             'nickname': 'Login',
             'location': 'Bieżąca lokalizacja',
@@ -80,10 +80,29 @@ class EditTechnologyForm(ModelForm):
             'description': 'Opis',
         }
 
-        def __init__(self, *args, **kwargs):
-            super(EditTechnologyForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(EditTechnologyForm, self).__init__(*args, **kwargs)
 
-            for key, value in self.fields.items():
-                value.widget.attrs.update(
-                    {'class': 'input'}
-                )
+        for key, value in self.fields.items():
+            value.widget.attrs.update(
+                {'class': 'input'}
+            )
+
+
+class SendMessageForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['name', 'email', 'title', 'content']
+
+        labels = {
+            'name': 'Imię i nazwisko',
+            'email': 'Adres e-mail',
+            'title': 'Tytuł wiadomości',
+            'content': 'Treść wiadomośći'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(SendMessageForm, self).__init__(*args, **kwargs)
+
+        for key, value in self.fields.items():
+            value.widget.attrs.update({'class': 'input'})

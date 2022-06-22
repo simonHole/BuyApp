@@ -1,15 +1,14 @@
-from asyncio.windows_events import NULL
+from typing import Type
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
-from django.db.models import Q
 from projects.models import *
 from .models import *
-from .forms import CreateUserForm, EditUserForm, CreateTechnologyForm
+from .forms import CreateUserForm, EditUserForm, CreateTechnologyForm, SendMessageForm
 from .utils import search_profiles, pagination_profiles
-
-from allauth.socialaccount.forms import SignupForm as SocialSignupForm
+from django.contrib.auth.models import AnonymousUser
 
 # Create your views here.
 
@@ -19,6 +18,7 @@ def login_profile(request):
     context = {
         'page': page,
     }
+
     # When we are logged and use 'login' URL switch to main site with users1
     if request.user.is_authenticated:
         return redirect('profiles')
@@ -35,15 +35,14 @@ def login_profile(request):
         except:
             messages.error(request, f"Nie znaleziono użytkownika: {username}.")
 
-        # Authenticate the user
         user = authenticate(request, username=user, password=password)
 
-        # login() create a session for the user
         if user is not None:
             login(request, user)
-            return redirect('profiles')
+            return redirect(request.GET['next'] if 'next' in request.GET else 'profiles')
         else:
-            messages.error(request, "Login lub hasło są niepoprawne.")
+            messages.error(
+                request, "Logowanie niepomyślne.")
 
     return render(request, 'users/login-and-register.html', context)
 
@@ -110,7 +109,6 @@ def userProfile(request, pk):
         'tags_technologies': tags_technologies,
         'projects': projects,
     }
-    print(count)
 
     return render(request, 'users/profile.html', context)
 
@@ -209,3 +207,59 @@ def delete_technology(request, pk):
         return redirect('account')
     context = {'object': technology, 'delete_type': delete_type}
     return render(request, 'delete-template.html', context)
+
+
+@login_required(login_url='login')
+def inbox(request):
+    profile = request.user.profile
+    msg_request = profile.recipient_msg.all()
+    print(msg_request)
+    unread_msg_count = msg_request.filter(is_read=False).count()
+    context = {
+        'msg_request': msg_request,
+        'unread_msg_count': unread_msg_count,
+    }
+    return render(request, 'users/inbox.html', context)
+
+
+@login_required(login_url='login')
+def message(request, pk):
+    profile = request.user.profile
+    message = profile.recipient_msg.get(id=pk)
+    if not message.is_read:
+        message.is_read = True
+        message.save()
+    context = {'message': message}
+    return render(request, 'users/message.html', context)
+
+
+def create_message(request, pk):
+    recipient = Profile.objects.get(id=pk)
+    form = SendMessageForm
+
+    try:
+        sender = request.user.profile
+    except:
+        sender = None
+
+    if request.method == 'POST':
+        form = SendMessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = sender
+            message.recipient = recipient
+
+            if sender:
+                message.name = sender.full_name
+                message.email = sender.email
+            message.save()
+
+            messages.success(
+                request, f'Twoja wiadomość "{message.title}" została wysłana pomyślnie.')
+            return redirect('user-profile', pk=recipient.id)
+
+    context = {
+        'recipient': recipient,
+        'form': form
+    }
+    return render(request, 'users/send-message.html', context)

@@ -1,13 +1,14 @@
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+
 from .models import *
+from django.conf import settings
 
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
-        # Instance will be gonna sender from post_save create_profile (User)
         user = instance
         profile = Profile.objects.create(
             user=user,
@@ -15,8 +16,8 @@ def create_profile(sender, instance, created, **kwargs):
             email=user.email,
             full_name=user.last_name + ' ' + user.first_name,
         )
-        print(f'create_profile {profile.nickname} successfully created')
 
+        print(f'create_profile {profile.nickname} successfully created')
 
 
 @receiver(post_save, sender=Profile)

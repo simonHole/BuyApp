@@ -60,42 +60,47 @@
             <h5 class="project--rating">
               {{project.scores_votes}}% pozytywnych opinii ({{project.total_votes}} Głos{{project.total_votes|pluralize:"y"}})
             </h5>
-
-            <form class="form" action="#" method="POST">
-              <!-- Textarea -->
+            <!-- LOGIN USER-->
+            {% if request.user.is_authenticated %}
+              <!-- IF WAS COMMENTED BY LOGIN USER -->
+              {% if request.user.profile.id in project.get_reviewers or request.user.profile == project.owner %}
+                <p></p>
+                <!-- AFTER AUTHENTICATED -->
+              {% else %}
+            <form class="form" action="{% url 'project' project.id %}" method="POST">
+              {% csrf_token %}
+              {% for field in review_form %}
               <div class="form__field">
-                <label for="formInput#textarea">Komentarze: </label>
-                <textarea class="input input--textarea" name="message" id="formInput#textarea"
-                  placeholder="Napisz swój komentarz..."></textarea>
+                {{field}}
               </div>
+              {% endfor %}
+              
               <input class="btn btn--sub btn--lg" type="submit" value="Skomentuj" />
             </form>
+              {% endif %}
+            {% else %}
+              <p>Nie możesz skomentować projektu, ponieważ nie jesteś zalogowany</p>
+              <a href="{% url 'login' %}?next={{request.path}}">Logowanie</a>
+            {% endif %}
+
+
             <div class="commentList">
+              {% for review in project.review_set.all %}
+              {% if review.content %}
               <div class="comment">
-                <a href="profile.html">
+                <a href="{% url 'user-profile' review.owner.id %}">
                   <img class="avatar avatar--md" src="{% static 'images/default.jpg' %}" alt="user" />
                 </a>
                 <div class="comment__details">
-                  <a href="profile.html" class="comment__author">Jan Nowak</a>
+                  <a href="{% url 'user-profile' review.owner.id %}" class="comment__author">{{review.owner.full_name}}</a>
                   <p class="comment__info">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias numquam perferendis
-                    mollitia minus minima exercitationem possimus ab deserunt qui, soluta iusto doloribus eveniet
-                    similique consequuntur ratione, dignissimos ut magni laborum quo.
+                    {{review.content|linebreaksbr}}
                   </p>
                 </div>
               </div>
-              <div class="comment">
-                <a href="profile.html">
-                  <img class="avatar avatar--md" src="{% static 'images/default.jpg' %}" alt="user" />
-                </a>
-                <div class="comment__details">
-                  <a href="profile.html" class="comment__author">Paweł Szczęsny</a>
-                  <p class="comment__info">
-                    Consectetur adipisicing elit. Reprehenderit alias numquam perferendis mollitia minus minima
-                    exercitationem possimus ab deserunt qui, ratione, dignissimos ut magni laborum quo.
-                  </p>
-                </div>
-              </div>
+              {% endif %}
+              {% endfor %}
+              
             </div>
           </div>
         </div>
