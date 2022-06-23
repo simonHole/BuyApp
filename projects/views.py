@@ -141,7 +141,7 @@ def buy_project(request, pk):
 
     return render(request, 'projects/buy-project.html', context)
 
-
+@login_required(login_url='login')
 def payment_details(request, payment_id):
     payment = get_object_or_404(get_payment_model(), id=payment_id)
 

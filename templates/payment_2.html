@@ -1,0 +1,11 @@
+<div class="content-box">
+    <div class="formWrapper">
+        <a class="backButton" href="{% url 'account' %}"><i class="im im-angle-left"></i></a>
+        <br>
+        <form action="{{ form.action }}" method="{{ form.method }}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p><input class="btn btn--main btn--lg  my-md" type="submit" value="Dokończ procedure transakcji" /></p>
+        </form>
+    </div>
+</div>
