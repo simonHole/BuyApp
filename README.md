@@ -1,2 +1,4 @@
 # buy-app
-Web Application to buy another apps written in Django.
+## 80% completed
+Application to buy websites.
+Built in Django.
